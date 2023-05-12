@@ -1,0 +1,10 @@
+{
+    "rust-analyzer.linkedProjects": [
+        ".\\rint-server\\Cargo.toml",
+        ".\\rint-core\\Cargo.toml",
+        ".\\rint-client\\Cargo.toml"
+    ],
+    "cSpell.words": [
+        "rint"
+    ]
+}

@@ -1,0 +1,26 @@
+[package]
+name = "rint-server"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rint-core =  { path = "../rint-core" }
+tokio = "1.28.0"
+log = "0.4"
+env_logger = "0.10.0"
+protobuf = "2.28.0"
+protobuf-codegen-pure = "2.28.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+dashmap = "5.4.0"
+lazy_static = "1.4.0"
+dhat = "0.3.2"
+tokio-stream = "0.1"
+[profile.release]
+debug = 1
+
+[features]
+dhat-heap = []    # if you are doing heap profiling
+dhat-ad-hoc = []  # if you are doing ad hoc profiling
