@@ -16,14 +16,8 @@ use command::Commands;
 use env_logger::{Builder, Target};
 use log::debug;
 use log::{error, info, warn, LevelFilter};
-use rint_core::{
-    protocol::{Message, MessageCompressor, MessageDecoder, MessageDecompressor, MessageEncoder},
-    Result,
-};
-use tokio::{
-    io::{AsyncWriteExt, BufReader, BufWriter},
-    net::TcpStream,
-};
+use rint_core::Result;
+use tokio::io::AsyncWriteExt;
 
 fn init_log() {
     let mut builder = Builder::from_default_env();
@@ -48,13 +42,12 @@ async fn main() -> Result<()> {
     let mut client = Client::connect(addr).await?;
 
     match cli.command.or(Some(Commands::Ping {
-        msg: Some("Hello".as_bytes().to_vec()),
+        msg: "Hello".into(),
     })) {
         Some(Commands::Ping { msg }) => client.ping(msg).await?,
-        Some(Commands::Shutdown) => (),
+        Some(Commands::Shutdown) => client.shutdown().await?,
         Some(Commands::Info { key }) => (),
         None => (),
     };
-
     Ok(())
 }

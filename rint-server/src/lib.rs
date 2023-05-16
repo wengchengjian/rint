@@ -1,6 +1,6 @@
 pub mod constant;
 pub mod server;
-use std::{collections::HashMap, sync::Arc};
+use std::collections::HashMap;
 
 use constant::SERVER_INFO;
 use dashmap::DashMap;

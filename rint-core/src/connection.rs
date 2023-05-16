@@ -1,6 +1,6 @@
-use std::io::{self, Cursor, Error};
+use std::io::{self, Cursor};
 
-use bytes::BytesMut;
+use bytes::{Buf, BytesMut};
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt, BufWriter},
     net::TcpStream,
@@ -23,6 +23,10 @@ impl Connection {
             stream: BufWriter::new(socket),
             buffer: BytesMut::with_capacity(4 * 1024),
         }
+    }
+
+    pub async fn has_data(&self) -> bool {
+        self.stream.buffer().len() > 0
     }
 
     pub async fn read_message(&mut self) -> crate::Result<Option<Message>> {
@@ -56,23 +60,46 @@ impl Connection {
         let body = MessageCompressor::compress(message.get_body());
         message.set_body(body);
 
-        let data = MessageEncoder::encode(message).await;
+        let data = MessageEncoder::encode(message);
 
         self.stream.write_all(&data).await?;
         self.stream.flush().await
     }
 
+    pub fn write_message_sync(&mut self, message: &mut Message) -> io::Result<()> {
+        let body = MessageCompressor::compress(message.get_body());
+        message.set_body(body);
+
+        let data = MessageEncoder::encode(message);
+
+        self.stream.write_all(&data);
+        self.stream.flush();
+        Ok(())
+    }
+
     pub async fn parse_message(&mut self) -> Result<Option<Message>, std::io::Error> {
         let mut cursor = Cursor::new(&self.buffer[..]);
+
+        cursor.set_position(0);
 
         let message = match MessageDecoder::decode(&mut cursor).await {
             Ok(message) => Some(message),
             Err(_) => return Ok(None),
         };
+        let len = cursor.position() as usize;
+
+        self.buffer.advance(len);
+
         if let Some(mut message) = message {
             message.set_body(MessageDecompressor::decompress(&message.get_body()));
             return Ok(Some(message));
         }
+
         return Ok(None);
+    }
+
+    pub async fn close(&mut self) -> io::Result<()> {
+        self.stream.shutdown().await?;
+        Ok(())
     }
 }

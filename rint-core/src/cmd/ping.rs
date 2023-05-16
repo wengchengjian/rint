@@ -1,4 +1,4 @@
-use log::debug;
+use log::info;
 use serde::{Deserialize, Serialize};
 
 use crate::{connection::Connection, protocol::Message, shutdown::Shutdown, Result};
@@ -17,7 +17,7 @@ impl Ping {
 
     pub async fn apply(self, conn: &mut Connection, shutdown: &mut Shutdown) -> Result<()> {
         let msg: String = String::from_utf8(self.msg).unwrap();
-        debug!("ping {}", msg);
+        info!("ping {}", msg);
 
         let mut message = Message::new(0, format!("pong {}", msg).into_bytes());
         // Write the response back to the client

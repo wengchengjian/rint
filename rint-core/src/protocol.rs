@@ -1,17 +1,8 @@
-use std::{
-    io::{Cursor, Read},
-    num::TryFromIntError,
-    string::FromUtf8Error,
-};
+use std::io::Cursor;
 
+use log::info;
 use lz4_flex::{compress_prepend_size, decompress_size_prepended};
-use tokio::{
-    io::{AsyncReadExt, AsyncWriteExt, BufReader, BufWriter},
-    net::{
-        tcp::{ReadHalf, WriteHalf},
-        TcpStream,
-    },
-};
+use tokio::io::AsyncReadExt;
 
 #[derive(Debug)]
 pub struct Message {
@@ -115,12 +106,13 @@ impl MessageDecoder {
         AsyncReadExt::read_exact(reader, &mut data).await?;
         msg.set_header(header);
         msg.set_body(data);
+        info!("{}", reader.position());
         Ok(msg)
     }
 }
 
 impl MessageEncoder {
-    pub async fn encode(msg: &mut Message) -> Vec<u8> {
+    pub fn encode(msg: &mut Message) -> Vec<u8> {
         let mut buf = Vec::new();
         buf.push(msg.header.version);
         buf.append(&mut msg.header.magic.to_be_bytes().to_vec());

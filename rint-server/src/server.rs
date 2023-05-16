@@ -6,7 +6,10 @@ use rint_core::{
 };
 use tokio::{
     net::{TcpListener, TcpStream},
-    sync::{broadcast, mpsc, Semaphore},
+    sync::{
+        broadcast::{self, Sender},
+        mpsc, Semaphore,
+    },
     time,
 };
 
@@ -27,6 +30,8 @@ pub struct Handler {
 
     shutdown: Shutdown,
 
+    notify_shutdown: Sender<()>,
+
     _shutdown_complete: mpsc::Sender<()>,
 }
 
@@ -34,13 +39,14 @@ pub async fn run(listener: TcpListener, shutdown: impl Future) {
     let (notify_shutdown, _) = broadcast::channel(1);
     let (shutdown_complete_tx, mut shutdown_complete_rx) = mpsc::channel(1);
 
+    let mut shut = notify_shutdown.subscribe();
+
     let mut server = Listener {
         listener,
         limit_connections: Arc::new(Semaphore::new(MAX_CONNECTIONS.into())),
         notify_shutdown,
         shutdown_complete_tx,
     };
-
     tokio::select! {
         res = server.run() => {
             if let Err(err) = res {
@@ -50,6 +56,10 @@ pub async fn run(listener: TcpListener, shutdown: impl Future) {
         _ = shutdown => {
             // The shutdown signal has been received.
             info!("shutting down");
+        }
+        _shut = shut.recv() => {
+            info!("shutting down");
+
         }
     }
 
@@ -88,6 +98,7 @@ impl Listener {
                 // buffers to perform redis protocol frame parsing.
                 connection: Connection::new(socket),
 
+                notify_shutdown: self.notify_shutdown.clone(),
                 // Receive shutdown notifications.
                 shutdown: Shutdown::new(self.notify_shutdown.subscribe()),
 
@@ -142,7 +153,12 @@ impl Handler {
             let cmd = Command::from_message(message)?;
             debug!("{:?}", cmd);
 
-            cmd.apply(&mut self.connection, &mut self.shutdown).await?;
+            cmd.apply(
+                &mut self.connection,
+                &mut self.shutdown,
+                &self.notify_shutdown,
+            )
+            .await?;
         }
         Ok(())
     }

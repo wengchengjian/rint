@@ -31,11 +31,7 @@ pub enum Commands {
 
     #[clap(about = "ping")]
     Ping {
-        #[arg(value_parser = bytes_from_str)]
-        msg: Option<Vec<u8>>,
+        #[clap(default_value = "Hello")]
+        msg: String,
     },
-}
-
-fn bytes_from_str(src: &str) -> Result<Vec<u8>, std::io::Error> {
-    Ok(src.as_bytes().to_vec())
 }

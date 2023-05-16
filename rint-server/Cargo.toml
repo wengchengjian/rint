@@ -6,7 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rint-core =  { path = "../rint-core" }
+rint-core= { path="../rint-core" }
+
 tokio = "1.28.0"
 log = "0.4"
 env_logger = "0.10.0"
@@ -21,6 +22,3 @@ tokio-stream = "0.1"
 [profile.release]
 debug = 1
 
-[features]
-dhat-heap = []    # if you are doing heap profiling
-dhat-ad-hoc = []  # if you are doing ad hoc profiling

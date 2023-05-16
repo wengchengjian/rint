@@ -1,18 +1,13 @@
 use env_logger::{Builder, Target};
-use log::debug;
-use log::{error, info, warn, LevelFilter};
+use log::{info, LevelFilter};
 use rint_core::config::Config;
-use rint_core::protocol::Message;
 use rint_core::Result;
-use rint_server::{query_server_info, server, shutdown};
-use std::net::{IpAddr, SocketAddr};
+use rint_server::server;
+use std::env;
+use std::net::IpAddr;
 use std::str::FromStr;
-use std::sync::atomic::{AtomicBool, AtomicPtr, AtomicU8};
-use std::sync::atomic::{AtomicI8, Ordering};
-use std::{env, fs};
-use tokio::io::{AsyncReadExt, AsyncWriteExt, BufReader, BufWriter};
-use tokio::net::tcp::WriteHalf;
-use tokio::net::{TcpListener, TcpStream};
+use std::sync::atomic::AtomicU8;
+use tokio::net::TcpListener;
 use tokio::signal;
 
 fn init_log() {
