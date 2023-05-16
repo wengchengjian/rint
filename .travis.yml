@@ -1,0 +1,9 @@
+language: rust
+rust:
+  - stable
+script:
+  - cargo build --verbose --workspace
+  - cargo test --verbose --workspace
+before_cache:
+  - rm -rf "$TRAVIS_HOME/.cargo/registry/src"
+cache: cargo
