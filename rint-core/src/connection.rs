@@ -1,4 +1,7 @@
-use std::io::{self, Cursor};
+use std::{
+    collections::HashMap,
+    io::{self, Cursor},
+};
 
 use bytes::{Buf, BytesMut};
 use tokio::{
@@ -15,13 +18,47 @@ pub struct Connection {
     pub stream: BufWriter<TcpStream>,
 
     pub buffer: BytesMut,
+
+    pub session: Session,
 }
 
+#[derive(Debug)]
+pub struct Session {
+    pub producer_context: ProducerContext,
+}
+
+#[derive(Debug)]
+pub struct ProducerContext {
+    pub produce_topic_seq: HashMap<String, u64>,
+}
+
+impl ProducerContext {
+    pub fn new() -> ProducerContext {
+        return ProducerContext {
+            produce_topic_seq: HashMap::new(),
+        };
+    }
+    pub fn get_seq_and_add(&mut self, topic: &str) -> u64 {
+        let seq = self.produce_topic_seq.entry(topic.to_string()).or_insert(0);
+        *seq += 1;
+
+        return seq.clone();
+    }
+}
+
+impl Session {
+    pub fn new() -> Session {
+        return Session {
+            producer_context: ProducerContext::new(),
+        };
+    }
+}
 impl Connection {
     pub fn new(socket: TcpStream) -> Self {
         Connection {
             stream: BufWriter::new(socket),
             buffer: BytesMut::with_capacity(4 * 1024),
+            session: Session::new(),
         }
     }
 

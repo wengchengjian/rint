@@ -8,3 +8,17 @@ pub enum PartitionStateChange {
     /// 当分区的 leader 宕机，转移到这个状态。
     OfflinePartition,
 }
+
+pub struct Partition {
+    pub num: u64,
+
+    pub max_offset: u64,
+}
+
+impl Partition {
+    pub fn compute_partition(partition: Option<u64>, key: Option<String>, num: u64) -> u64 {
+        if let Some(partition) = partition {
+            return partition;
+        }
+    }
+}

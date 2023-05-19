@@ -3,6 +3,10 @@ name = "rint"
 version = "0.1.0"
 edition = "2021"
 
+
+[build-dependencies]
+autocfg = "1"
+
 [dependencies]
 rint-core= { path="./rint-core" }
 rint-client= { path="./rint-client" }

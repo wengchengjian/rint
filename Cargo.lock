@@ -827,6 +827,7 @@ checksum = "a5996294f19bd3aae0453a862ad728f60e6600695733dd5df01da90c54363a3c"
 name = "rint"
 version = "0.1.0"
 dependencies = [
+ "autocfg",
  "clap",
  "dashmap",
  "dhat",
@@ -871,8 +872,6 @@ dependencies = [
  "log",
  "lz4_flex",
  "passwords",
- "protobuf",
- "protobuf-codegen-pure",
  "rand 0.8.5",
  "rust-crypto",
  "serde",

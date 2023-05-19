@@ -11,6 +11,10 @@ pub struct Config {
     pub ip: String,
 
     pub port: u16,
+
+    pub data_dir: String,
+
+    pub log_dir: String,
 }
 
 const DEFAULT_CONFIG_CONTENT: &str = r#"
@@ -21,9 +25,9 @@ port = 8796
 
 impl Config {
     pub fn parse_from(path: &str) -> Config {
-        let mut default = toml::from_str(DEFAULT_CONFIG_CONTENT).expect("加载默认配置失败");
+        let default = toml::from_str(DEFAULT_CONFIG_CONTENT).expect("加载默认配置失败");
 
-        let mut config = load_content(path, default).expect("加载配置文件错误");
+        let config = load_content(path, default).expect("加载配置文件错误");
 
         return config;
     }

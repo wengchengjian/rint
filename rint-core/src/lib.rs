@@ -4,11 +4,10 @@ pub mod connection;
 pub mod encrypt;
 pub mod error;
 pub mod parse;
-pub mod partition;
+pub mod producer;
 pub mod protocol;
-pub mod replica;
 pub mod shutdown;
-pub mod topic;
+pub mod storage;
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
 
 pub type Result<T> = std::result::Result<T, Error>;

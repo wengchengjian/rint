@@ -21,8 +21,5 @@ log = "0.4"
 lz4_flex = { version = "0.10.0", default-features = false }
 env_logger = "0.10.0"
 clap = { version = "4.2.7", features = ["derive"] }
-protobuf = "2.28.0"
-protobuf-codegen-pure = "2.28.0"
 bytes = "1.4.0"
-[build-dependencies]
-protobuf-codegen-pure = "2.28.0"
+

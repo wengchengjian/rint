@@ -46,7 +46,9 @@ async fn main() -> Result<()> {
     })) {
         Some(Commands::Ping { msg }) => client.ping(msg).await?,
         Some(Commands::Shutdown) => client.shutdown().await?,
-        Some(Commands::Info { key }) => (),
+        Some(Commands::Info { key }) => client.info(key).await?,
+        Some(Commands::Subscribe(arg)) => client.subscribe(arg).await?,
+        Some(Commands::Publish(arg)) => client.publish(arg).await?,
         None => (),
     };
     Ok(())

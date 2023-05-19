@@ -83,6 +83,8 @@ impl Listener {
     pub async fn run(&mut self) -> Result<()> {
         info!("accepting inbound connections");
 
+        let mut rint_factory = prepare_environment();
+
         loop {
             let permit = self
                 .limit_connections
@@ -162,4 +164,8 @@ impl Handler {
         }
         Ok(())
     }
+}
+
+pub struct RintFactory {
+    pub context: RintServerContext,
 }

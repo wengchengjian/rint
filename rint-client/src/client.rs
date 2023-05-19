@@ -5,6 +5,8 @@ use rint_core::{cmd, Result};
 use rint_core::{cmd::ping::Ping, connection::Connection, protocol::Message};
 use tokio::net::{TcpStream, ToSocketAddrs};
 
+use crate::command::{PublishArg, SubscribeArg};
+
 pub struct Client {
     connection: Connection,
 }
@@ -33,6 +35,18 @@ impl Client {
         let res = self.read_response().await?;
 
         info!("{:?}", String::from_utf8(res.clone())?);
+        Ok(())
+    }
+
+    pub async fn info(&mut self, key: Option<String>) -> Result<()> {
+        Ok(())
+    }
+
+    pub async fn subscribe(&mut self, arg: SubscribeArg) -> Result<()> {
+        Ok(())
+    }
+
+    pub async fn publish(&mut self, arg: PublishArg) -> Result<()> {
         Ok(())
     }
 

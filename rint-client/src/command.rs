@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use clap::{Parser, Subcommand};
+use clap::{Args, FromArgMatches, Parser, Subcommand};
 use rint_core::DEFAULT_PORT;
 use serde::{Deserialize, Serialize};
 
@@ -34,4 +34,27 @@ pub enum Commands {
         #[clap(default_value = "Hello")]
         msg: String,
     },
+
+    #[clap(about = "subscribe")]
+    Subscribe(SubscribeArg),
+    #[clap(about = "publish")]
+    Publish(PublishArg),
+}
+#[derive(Serialize, Debug, Args, Clone, Deserialize)]
+pub struct SubscribeArg {
+    /// 消费topic
+    #[clap(long)]
+    topic: String,
+
+    /// 指定消费者组
+    #[clap(long)]
+    group: Option<String>,
+
+    /// 是否重头消费
+    #[clap(long)]
+    begging_offset: bool,
+
+    // 指定消费偏移量
+    #[clap(long)]
+    assign_offset: Option<u64>,
 }

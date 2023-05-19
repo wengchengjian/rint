@@ -7,7 +7,9 @@ use self::{close::Close, ping::Ping, unknown::Unknown};
 
 pub mod close;
 pub mod ping;
+pub mod publish;
 pub mod shutdown;
+pub mod subscribe;
 pub mod unknown;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

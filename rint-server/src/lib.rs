@@ -1,5 +1,7 @@
 pub mod constant;
+pub mod context;
 pub mod server;
+
 use std::collections::HashMap;
 
 use constant::SERVER_INFO;
